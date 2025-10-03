@@ -1,0 +1,32 @@
+name: Daily HN Top 10
+
+on:
+  schedule:
+    # Runs daily at 08:00 IST (02:30 UTC)
+    - cron: "30 2 * * *"
+  workflow_dispatch:  # lets you run it manually from Actions tab
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run script and save outputs
+        run: |
+          python hn_top10_daily.py --csv top10.csv --md top10.md
+
+      - name: Upload artifacts (CSV & MD)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hn-top10-output
+          path: |
+            top10.csv
+            top10.md
